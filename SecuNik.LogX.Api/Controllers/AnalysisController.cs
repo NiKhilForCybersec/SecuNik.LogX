@@ -44,7 +44,7 @@ namespace SecuNik.LogX.Api.Controllers
                 }
 
                 // Map DTO to options
-                var options = new Core.Interfaces.AnalysisOptions
+                var options = new AnalysisOptions
                 {
                     PreferredParserId = request.Options?.ParserID,
                     DeepScan = request.Options?.DeepScan ?? true,

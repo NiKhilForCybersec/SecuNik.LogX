@@ -1,4 +1,12 @@
 using SecuNik.LogX.Core.Interfaces;
+using SecuNik.LogX.Core.Entities;
+using SecuNik.LogX.Core.DTOs; // Add this for IOCDto
+using SecuNik.LogX.Api.Data;
+using SecuNik.LogX.Api.Services.Parsers; // Add this for ParserFactory
+using Microsoft.EntityFrameworkCore;
+
+// IMPORTANT: Add this alias to avoid namespace collision
+using AnalysisEntity = SecuNik.LogX.Core.Entities.Analysis;
 using SecuNik.LogX.Core.Configuration;
 using Microsoft.Extensions.Options;
 using System.Text;

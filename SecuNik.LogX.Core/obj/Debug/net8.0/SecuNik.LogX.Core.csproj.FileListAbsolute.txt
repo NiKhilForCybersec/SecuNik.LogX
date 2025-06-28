@@ -1,0 +1,13 @@
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.csproj.AssemblyReference.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.GeneratedMSBuildEditorConfig.editorconfig
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.AssemblyInfoInputs.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.AssemblyInfo.cs
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.csproj.CoreCompileInputs.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.sourcelink.json
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\bin\Debug\net8.0\SecuNik.LogX.Core.deps.json
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\bin\Debug\net8.0\SecuNik.LogX.Core.dll
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\bin\Debug\net8.0\SecuNik.LogX.Core.pdb
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.dll
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\refint\SecuNik.LogX.Core.dll
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\SecuNik.LogX.Core.pdb
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Core\obj\Debug\net8.0\ref\SecuNik.LogX.Core.dll

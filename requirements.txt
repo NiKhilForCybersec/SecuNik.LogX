@@ -8,7 +8,7 @@ Microsoft.AspNetCore.SignalR>=1.1.0
 Microsoft.Extensions.Diagnostics.HealthChecks>=8.0.0
 Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore>=8.0.0
 Swashbuckle.AspNetCore>=6.5.0
-System.Text.Json>=8.0.1
+System.Text.Json>=8.0.5
 
 # Code Analysis and Compilation
 Microsoft.CodeAnalysis.CSharp>=4.8.0

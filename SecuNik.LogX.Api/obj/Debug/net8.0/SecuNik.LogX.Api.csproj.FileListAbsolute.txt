@@ -1,0 +1,8 @@
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.csproj.AssemblyReference.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.GeneratedMSBuildEditorConfig.editorconfig
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.AssemblyInfoInputs.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.AssemblyInfo.cs
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.csproj.CoreCompileInputs.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.MvcApplicationPartsAssemblyInfo.cs
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.MvcApplicationPartsAssemblyInfo.cache
+N:\MainProject\SecuNik.LogX\SecuNik.LogX.Api\obj\Debug\net8.0\SecuNik.LogX.Api.sourcelink.json
