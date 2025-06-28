@@ -36,7 +36,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             _logger = logger;
         }
 
-       public async Task<SecuNik.LogX.Core.Entities.Analysis> StartAnalysisAsync(Guid uploadId, AnalysisOptions options, CancellationToken cancellationToken = default)
+        public async Task<AnalysisEntity> StartAnalysisAsync(Guid uploadId, AnalysisOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -197,7 +197,8 @@ namespace SecuNik.LogX.Api.Services.Analysis
             }
         }
 
-        public async Task<SecuNik.LogX.Core.Entities.Analysis?> GetAnalysisAsync(Guid analysisId, CancellationToken cancellationToken = default)
+        public async Task<AnalysisEntity?> GetAnalysisAsync(Guid analysisId, CancellationToken cancellationToken = default)
+
         {
             return await _dbContext.Analyses
                 .Include(a => a.RuleMatches)
@@ -205,7 +206,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
                 .FirstOrDefaultAsync(a => a.Id == analysisId, cancellationToken);
         }
 
-        public async Task<List<SecuNik.LogX.Core.Entities.Analysis>> GetRecentAnalysesAsync(int limit = 10, CancellationToken cancellationToken = default)
+        public async Task<List<AnalysisEntity>> GetRecentAnalysesAsync(int limit = 10, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Analyses
                 .OrderByDescending(a => a.UploadTime)
