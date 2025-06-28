@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-slate-700;
+  }
+  
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-md;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-600;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-primary-600/30 text-primary-100;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10;
+  }
+
+  .cyber-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+
+  .cyber-border {
+    @apply border border-primary-500/30 bg-gradient-to-r from-primary-500/10 to-transparent;
+  }
+
+  .data-grid {
+    @apply grid gap-4;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .metric-card {
+    @apply glass-effect rounded-lg p-6 hover:bg-white/10 transition-all duration-300;
+  }
+
+  .status-indicator {
+    @apply w-2 h-2 rounded-full animate-pulse;
+  }
+
+  .status-online {
+    @apply bg-success-400;
+  }
+
+  .status-warning {
+    @apply bg-warning-400;
+  }
+
+  .status-error {
+    @apply bg-danger-400;
+  }
+
+  .status-offline {
+    @apply bg-slate-400;
+  }
+
+  .threat-level-low {
+    @apply text-success-400 bg-success-900/30;
+  }
+
+  .threat-level-medium {
+    @apply text-warning-400 bg-warning-900/30;
+  }
+
+  .threat-level-high {
+    @apply text-danger-400 bg-danger-900/30;
+  }
+
+  .threat-level-critical {
+    @apply text-red-400 bg-red-900/30;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(90deg, #3b82f6, #1d4ed8) 1;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+}
