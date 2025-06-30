@@ -12,7 +12,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             _logger = logger;
         }
         
-        public int CalculateThreatScore(List<RuleMatchResult> ruleMatches, List<IOC> iocs = null)
+        public int CalculateThreatScore(List<RuleMatchResult> ruleMatches, List<IOC>? iocs = null)
         {
             try
             {

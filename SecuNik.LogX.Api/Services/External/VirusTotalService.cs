@@ -114,14 +114,22 @@ namespace SecuNik.LogX.Api.Services.External
                 {
                     if (classification.TryGetProperty("suggested_threat_label", out var threatLabel))
                     {
-                        threatTypes.Add(threatLabel.GetString());
+                        var label = threatLabel.GetString();
+                        if (label != null)
+                        {
+                            threatTypes.Add(label);
+                        }
                     }
                     
                     if (classification.TryGetProperty("popular_threat_category", out var categories))
                     {
                         foreach (var category in categories.EnumerateArray())
                         {
-                            threatTypes.Add(category.GetProperty("value").GetString());
+                            var value = category.GetProperty("value").GetString();
+                            if (value != null)
+                            {
+                                threatTypes.Add(value);
+                            }
                         }
                     }
                     
@@ -129,7 +137,11 @@ namespace SecuNik.LogX.Api.Services.External
                     {
                         foreach (var name in names.EnumerateArray())
                         {
-                            malwareFamilies.Add(name.GetProperty("value").GetString());
+                            var value = name.GetProperty("value").GetString();
+                            if (value != null)
+                            {
+                                malwareFamilies.Add(value);
+                            }
                         }
                     }
                 }
@@ -238,7 +250,7 @@ namespace SecuNik.LogX.Api.Services.External
             }
         }
         
-        public async Task<List<IOC>> ExtractIOCsAsync(
+        public Task<List<IOC>> ExtractIOCsAsync(
             string content, 
             CancellationToken cancellationToken = default)
         {
@@ -246,10 +258,10 @@ namespace SecuNik.LogX.Api.Services.External
             // In a real implementation, we would use VirusTotal Intelligence to extract IOCs
             
             _logger.LogInformation("VirusTotal IOC extraction is not implemented");
-            return new List<IOC>();
+            return Task.FromResult(new List<IOC>());
         }
         
-        public async Task<ThreatContextResult> GetThreatContextAsync(
+        public Task<ThreatContextResult> GetThreatContextAsync(
             List<IOC> iocs, 
             CancellationToken cancellationToken = default)
         {
@@ -257,7 +269,7 @@ namespace SecuNik.LogX.Api.Services.External
             // In a real implementation, we would use VirusTotal Intelligence to get threat context
             
             _logger.LogInformation("VirusTotal threat context is not implemented");
-            return new ThreatContextResult();
+            return Task.FromResult(new ThreatContextResult());
         }
         
         private async Task ThrottleRequestsAsync()
@@ -298,17 +310,5 @@ namespace SecuNik.LogX.Api.Services.External
                 _ => ReputationStatus.Unknown
             };
         }
-    }
-    
-    public class VirusTotalOptions
-    {
-        public const string SectionName = "VirusTotal";
-        
-        public string ApiKey { get; set; } = string.Empty;
-        public string BaseUrl { get; set; } = "https://www.virustotal.com/api/v3";
-        public bool EnableIntegration { get; set; } = false;
-        public int RequestDelayMs { get; set; } = 15000;
-        public int MaxRequestsPerMinute { get; set; } = 4;
-        public int CacheExpirationHours { get; set; } = 24;
     }
 }

@@ -42,6 +42,8 @@ namespace SecuNik.LogX.Api.Services.Parsers
             var stopwatch = Stopwatch.StartNew();
             var result = new ParseResult
             {
+                Success = false,
+                Events = new List<LogEvent>(),
                 ParserUsed = Name
             };
             
@@ -89,7 +91,14 @@ namespace SecuNik.LogX.Api.Services.Parsers
         
         public virtual async Task<ValidationResult> ValidateAsync(string content)
         {
-            var result = new ValidationResult();
+            var result = new ValidationResult
+            {
+                IsValid = true,
+                Errors = new List<string>(),
+                Warnings = new List<string>(),
+                Suggestions = new Dictionary<string, object>(),
+                Metadata = new Dictionary<string, object>()
+            };
             
             try
             {
@@ -149,7 +158,7 @@ namespace SecuNik.LogX.Api.Services.Parsers
         }
         
         // Helper methods
-        protected DateTime ParseTimestamp(string timestampStr, string[] formats = null)
+        protected DateTime ParseTimestamp(string timestampStr, string[]? formats = null)
         {
             if (string.IsNullOrEmpty(timestampStr))
                 return DateTime.UtcNow;
@@ -202,7 +211,7 @@ namespace SecuNik.LogX.Api.Services.Parsers
             return "INFO"; // Default level
         }
         
-        protected Dictionary<string, object> ExtractFields(string line, string pattern = null)
+        protected Dictionary<string, object> ExtractFields(string line, string? pattern = null)
         {
             var fields = new Dictionary<string, object>();
             

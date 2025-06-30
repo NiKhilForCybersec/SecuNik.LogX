@@ -1,12 +1,6 @@
 using SecuNik.LogX.Core.Interfaces;
 using SecuNik.LogX.Core.Entities;
-using SecuNik.LogX.Core.DTOs; // Add this for IOCDto
 using SecuNik.LogX.Api.Data;
-using SecuNik.LogX.Api.Services.Parsers; // Add this for ParserFactory
-using Microsoft.EntityFrameworkCore;
-
-// IMPORTANT: Add this alias to avoid namespace collision
-using AnalysisEntity = SecuNik.LogX.Core.Entities.Analysis;
 using SecuNik.LogX.Api.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
@@ -53,7 +47,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             _logger = logger;
         }
         
-        public async Task<AnalysisEntity> StartAnalysisAsync(
+        public async Task<Analysis> StartAnalysisAsync(
             Guid uploadId, 
             AnalysisOptions options, 
             CancellationToken cancellationToken = default)
@@ -61,7 +55,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             _logger.LogInformation("Starting analysis for upload {UploadId}", uploadId);
             
             // Create analysis record
-            var analysis = new AnalysisEntity
+            var analysis = new Analysis
             {
                 Id = Guid.NewGuid(),
                 UploadTime = DateTime.UtcNow,
@@ -374,7 +368,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             }
         }
         
-        private async Task SendAnalysisCompletedAsync(AnalysisEntity analysis)
+        private async Task SendAnalysisCompletedAsync(Analysis analysis)
         {
             var result = new
             {
@@ -416,7 +410,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
         }
         
         private string GenerateSummary(
-            AnalysisEntity analysis, 
+            Analysis analysis, 
             List<LogEvent> events, 
             List<RuleMatchResult> ruleMatches,
             List<IOCDto> iocs)

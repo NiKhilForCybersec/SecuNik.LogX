@@ -36,6 +36,8 @@ namespace SecuNik.LogX.Core.DTOs
         
         public int TimeoutMinutes { get; set; } = 30;
         
+        public Guid? ParserID { get; set; }
+        
         public List<string> IncludeRuleTypes { get; set; } = new() { "yara", "sigma" };
         
         public List<string> ExcludeRuleCategories { get; set; } = new();

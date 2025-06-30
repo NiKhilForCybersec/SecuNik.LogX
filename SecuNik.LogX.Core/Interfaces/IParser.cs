@@ -24,8 +24,7 @@ namespace SecuNik.LogX.Core.Interfaces
         public TimeSpan ProcessingTime { get; set; }
         public List<string> Warnings { get; set; } = new();
         
-        // Renamed from 'Success' to 'CreateSuccess'
-        public static ParseResult CreateSuccess(List<LogEvent> events, string parserName)
+        public static ParseResult Success(List<LogEvent> events, string parserName)
         {
             return new ParseResult
             {
@@ -36,8 +35,7 @@ namespace SecuNik.LogX.Core.Interfaces
             };
         }
         
-        // Renamed from 'Failure' to 'CreateFailure' for consistency
-        public static ParseResult CreateFailure(string errorMessage, string parserName)
+        public static ParseResult Failure(string errorMessage, string parserName)
         {
             return new ParseResult
             {

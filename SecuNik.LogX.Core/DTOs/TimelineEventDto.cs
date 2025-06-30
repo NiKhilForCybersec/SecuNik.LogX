@@ -4,7 +4,7 @@ namespace SecuNik.LogX.Core.DTOs
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         
         public string EventType { get; set; } = string.Empty;
         
@@ -72,11 +72,11 @@ namespace SecuNik.LogX.Core.DTOs
     {
         public int TotalEvents { get; set; }
         
-        public DateTime? FirstEvent { get; set; }
+        public DateTime FirstEvent { get; set; } = DateTime.MinValue;
         
-        public DateTime? LastEvent { get; set; }
+        public DateTime LastEvent { get; set; } = DateTime.MinValue;
         
-        public TimeSpan? TimeRange { get; set; }
+        public TimeSpan TimeRange { get; set; }
         
         public Dictionary<string, int> EventsByType { get; set; } = new();
         

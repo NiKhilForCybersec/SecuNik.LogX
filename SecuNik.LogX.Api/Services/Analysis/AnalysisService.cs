@@ -1,13 +1,11 @@
-﻿using SecuNik.LogX.Core.Interfaces;
+using SecuNik.LogX.Core.Interfaces;
 using SecuNik.LogX.Core.Entities;
-using SecuNik.LogX.Core.DTOs;
 using SecuNik.LogX.Api.Data;
 using SecuNik.LogX.Api.Hubs;
 using SecuNik.LogX.Api.Services.Parsers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using System.Text;
-using AnalysisEntity = SecuNik.LogX.Core.Entities.Analysis;
 
 namespace SecuNik.LogX.Api.Services.Analysis
 {
@@ -36,14 +34,14 @@ namespace SecuNik.LogX.Api.Services.Analysis
             _logger = logger;
         }
 
-        public async Task<AnalysisEntity> StartAnalysisAsync(Guid uploadId, AnalysisOptions options, CancellationToken cancellationToken = default)
+        public async Task<Analysis> StartAnalysisAsync(Guid uploadId, AnalysisOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
                 _logger.LogInformation("Starting analysis for upload {UploadId}", uploadId);
 
                 // Create analysis record
-                var analysis = new AnalysisEntity
+                var analysis = new Analysis
                 {
                     Id = Guid.NewGuid(),
                     UploadTime = DateTime.UtcNow,
@@ -197,8 +195,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             }
         }
 
-        public async Task<AnalysisEntity?> GetAnalysisAsync(Guid analysisId, CancellationToken cancellationToken = default)
-
+        public async Task<Analysis?> GetAnalysisAsync(Guid analysisId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Analyses
                 .Include(a => a.RuleMatches)
@@ -206,7 +203,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
                 .FirstOrDefaultAsync(a => a.Id == analysisId, cancellationToken);
         }
 
-        public async Task<List<AnalysisEntity>> GetRecentAnalysesAsync(int limit = 10, CancellationToken cancellationToken = default)
+        public async Task<List<Analysis>> GetRecentAnalysesAsync(int limit = 10, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Analyses
                 .OrderByDescending(a => a.UploadTime)
@@ -258,7 +255,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             await AnalysisHub.SendAnalysisProgress(_hubContext, analysisId.ToString(), progress, message);
         }
 
-        private async Task SendAnalysisCompletedAsync(AnalysisEntity analysis)
+        private async Task SendAnalysisCompletedAsync(Analysis analysis)
         {
             var result = new
             {
@@ -314,7 +311,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
             return "low";
         }
 
-        private string GenerateSummary(AnalysisEntity analysis, List<LogEvent> events, List<RuleMatchResult> ruleMatches)
+        private string GenerateSummary(Analysis analysis, List<LogEvent> events, List<RuleMatchResult> ruleMatches)
         {
             var summary = new StringBuilder();
 
@@ -357,6 +354,3 @@ namespace SecuNik.LogX.Api.Services.Analysis
         }
     }
 }
-
-
-

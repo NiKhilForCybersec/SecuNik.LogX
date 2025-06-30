@@ -35,15 +35,14 @@ namespace SecuNik.LogX.Core.Interfaces
     }
     
     public class IOC
-{
-    public string Value { get; set; } = string.Empty;
-    public IOCType Type { get; set; }
-    public string Context { get; set; } = string.Empty;
-    public DateTime? FirstSeen { get; set; }
-    public int Confidence { get; set; } = 100; // 0-100
-    public bool IsMalicious { get; set; }  // ADD THIS LINE
-    public Dictionary<string, object> Metadata { get; set; } = new();
-}
+    {
+        public string Value { get; set; } = string.Empty;
+        public IOCType Type { get; set; }
+        public string Context { get; set; } = string.Empty;
+        public DateTime? FirstSeen { get; set; }
+        public int Confidence { get; set; } = 100; // 0-100
+        public Dictionary<string, object> Metadata { get; set; } = new();
+    }
     
     public class ThreatContextResult
     {

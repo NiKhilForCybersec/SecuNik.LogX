@@ -75,18 +75,6 @@
               "target": "Package",
               "version": "[4.8.0, )"
             },
-            "Microsoft.CodeAnalysis.CSharp.Workspaces": {
-              "target": "Package",
-              "version": "[4.8.0, )"
-            },
-            "Microsoft.CodeAnalysis.Common": {
-              "target": "Package",
-              "version": "[4.8.0, )"
-            },
-            "Microsoft.CodeAnalysis.Workspaces.Common": {
-              "target": "Package",
-              "version": "[4.8.0, )"
-            },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -127,7 +115,7 @@
             },
             "System.Text.Json": {
               "target": "Package",
-              "version": "[8.0.5, )"
+              "version": "[8.0.1, )"
             },
             "System.Text.RegularExpressions": {
               "target": "Package",
@@ -234,7 +222,7 @@
             },
             "System.Text.Json": {
               "target": "Package",
-              "version": "[8.0.5, )"
+              "version": "[8.0.1, )"
             }
           },
           "imports": [

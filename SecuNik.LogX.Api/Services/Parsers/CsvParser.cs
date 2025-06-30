@@ -82,8 +82,8 @@ namespace SecuNik.LogX.Api.Services.Parsers
                 {
                     Delimiter = delimiter,
                     HasHeaderRecord = true,
-                    BadDataFound = context => _logger.LogWarning("Bad CSV data at row {Row}: {RawRecord}", 
-                        context.Parser.Row, context.Parser.RawRecord),
+                    BadDataFound = args => _logger.LogWarning("Bad CSV data at row {RowNumber}: {RawRecord}", 
+                        args.Context.Parser.Row, args.RawRecord),
                     MissingFieldFound = null // Allow missing fields
                 };
                 
@@ -156,7 +156,7 @@ namespace SecuNik.LogX.Api.Services.Parsers
                 {
                     Delimiter = delimiter,
                     HasHeaderRecord = true,
-                    BadDataFound = context => result.Warnings.Add($"Bad data at row {context.Parser.Row}: {context.Parser.RawRecord}"),
+                    BadDataFound = args => result.Warnings.Add($"Bad data at row {args.Context.Parser.Row}: {args.RawRecord}"),
                     MissingFieldFound = null
                 };
                 

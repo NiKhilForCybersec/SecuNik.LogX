@@ -44,7 +44,7 @@ namespace SecuNik.LogX.Api.Controllers
                 }
 
                 // Map DTO to options
-                var options = new AnalysisOptions
+                var options = new Core.Interfaces.AnalysisOptions
                 {
                     PreferredParserId = request.Options?.ParserID,
                     DeepScan = request.Options?.DeepScan ?? true,
@@ -202,7 +202,7 @@ namespace SecuNik.LogX.Api.Controllers
                     Timeline = timeline,
                     MitreResults = mitreResults,
                     ThreatIntelligence = threatIntelligence,
-                    Tags = analysis.Tags != null ? JsonSerializer.Deserialize<List<string>>(analysis.Tags) : new List<string>(),
+                    Tags = analysis.Tags != null ? JsonSerializer.Deserialize<List<string>>(analysis.Tags) ?? new List<string>() : new List<string>(),
                     Notes = analysis.Notes
                 };
 
@@ -334,7 +334,7 @@ namespace SecuNik.LogX.Api.Controllers
                     duration = a.Duration,
                     iocs_count = a.IOCsJson != null ? JsonSerializer.Deserialize<List<IOCDto>>(a.IOCsJson)?.Count ?? 0 : 0,
                     rule_matches_count = a.RuleMatches.Count,
-                    tags = a.Tags != null ? JsonSerializer.Deserialize<List<string>>(a.Tags) : new List<string>()
+                    tags = a.Tags != null ? JsonSerializer.Deserialize<List<string>>(a.Tags) ?? new List<string>() : new List<string>()
                 }).ToList();
 
                 return Ok(new
@@ -490,7 +490,7 @@ namespace SecuNik.LogX.Api.Controllers
                         ? JsonSerializer.Deserialize<MitreAttackDto>(analysis.MitreResultsJson)
                         : null,
                     tags = analysis.Tags != null
-                        ? JsonSerializer.Deserialize<List<string>>(analysis.Tags)
+                        ? JsonSerializer.Deserialize<List<string>>(analysis.Tags) ?? new List<string>()
                         : new List<string>(),
                     notes = analysis.Notes,
                     export_date = DateTime.UtcNow
@@ -533,7 +533,7 @@ namespace SecuNik.LogX.Api.Controllers
 
                 // Get existing tags
                 var existingTags = analysis.Tags != null
-                    ? JsonSerializer.Deserialize<List<string>>(analysis.Tags)
+                    ? JsonSerializer.Deserialize<List<string>>(analysis.Tags) ?? new List<string>()
                     : new List<string>();
 
                 // Add new tags

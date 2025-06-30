@@ -18,7 +18,7 @@ namespace SecuNik.LogX.Api.Extensions
             // Configuration
             services.Configure<StorageOptions>(configuration.GetSection(StorageOptions.SectionName));
             services.Configure<OpenAIOptions>(configuration.GetSection(OpenAIOptions.SectionName));
-            services.Configure<VirusTotalOptions>(configuration.GetSection(VirusTotalOptions.SectionName));
+            services.Configure<SecuNik.LogX.Core.Configuration.VirusTotalOptions>(configuration.GetSection(SecuNik.LogX.Core.Configuration.VirusTotalOptions.SectionName));
             
             // Database
             services.AddDbContext<LogXDbContext>(options =>

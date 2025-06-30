@@ -1,13 +1,6 @@
 using SecuNik.LogX.Core.Interfaces;
-using SecuNik.LogX.Core.Entities;
-using SecuNik.LogX.Core.DTOs; // Add this for IOCDto
-using SecuNik.LogX.Api.Data;
-using SecuNik.LogX.Api.Services.Parsers; // Add this for ParserFactory
-using Microsoft.EntityFrameworkCore;
-
-// IMPORTANT: Add this alias to avoid namespace collision
-using AnalysisEntity = SecuNik.LogX.Core.Entities.Analysis;
 using SecuNik.LogX.Core.Configuration;
+using SecuNik.LogX.Core.Entities;
 using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
@@ -34,7 +27,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
         public async Task<object> AnalyzeAsync(
             List<LogEvent> events,
             List<RuleMatchResult> ruleMatches,
-            List<IOC> iocs,
+            List<IOC>? iocs = null,
             CancellationToken cancellationToken = default)
         {
             if (!_options.EnableAIAnalysis || string.IsNullOrEmpty(_options.ApiKey))
@@ -49,27 +42,27 @@ namespace SecuNik.LogX.Api.Services.Analysis
                     events.Count, ruleMatches.Count, iocs?.Count ?? 0);
                 
                 // Prepare data for analysis
-                var analysisData = PrepareAnalysisData(events, ruleMatches, iocs);
+                var analysisData = PrepareAnalysisData(events, ruleMatches, iocs ?? new List<IOC>());
                 
                 // Generate analysis
                 var analysis = await GenerateAnalysisAsync(analysisData, cancellationToken);
                 
                 // Extract IOCs if enabled
-                object iocAnalysis = null;
+                object? iocAnalysis = null;
                 if (_options.EnableAIIOCExtraction)
                 {
                     iocAnalysis = await ExtractIOCsAsync(analysisData, cancellationToken);
                 }
                 
                 // Generate threat assessment if enabled
-                object threatAssessment = null;
+                object? threatAssessment = null;
                 if (_options.EnableAIThreatAssessment)
                 {
-                    threatAssessment = await GenerateThreatAssessmentAsync(analysisData, ruleMatches, iocs, cancellationToken);
+                    threatAssessment = await GenerateThreatAssessmentAsync(analysisData, ruleMatches, iocs ?? new List<IOC>(), cancellationToken);
                 }
                 
                 // Generate summary if enabled
-                object summary = null;
+                object? summary = null;
                 if (_options.EnableAISummary)
                 {
                     summary = await GenerateSummaryAsync(analysisData, cancellationToken);

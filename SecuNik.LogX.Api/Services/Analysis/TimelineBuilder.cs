@@ -23,23 +23,23 @@ namespace SecuNik.LogX.Api.Services.Analysis
             try
             {
                 // Add events to timeline
-                foreach (var logEvent in events)
+                foreach (var evt in events)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     
                     var timelineEvent = new TimelineEventDto
                     {
                         Id = Guid.NewGuid(),
-                        Timestamp = logEvent.Timestamp,
+                        Timestamp = evt.Timestamp,
                         EventType = "log_event",
-                        Title = logEvent.Message,
-                        Description = logEvent.Message,
-                        Severity = MapLogLevelToSeverity(logEvent.Level),
-                        Source = logEvent.Source,
+                        Title = evt.Message,
+                        Description = evt.Message,
+                        Severity = MapLogLevelToSeverity(evt.Level),
+                        Source = evt.Source,
                         Category = "log",
-                        LineNumber = logEvent.LineNumber,
-                        RawData = logEvent.RawData,
-                        Details = new Dictionary<string, object>(logEvent.Fields)
+                        LineNumber = evt.LineNumber,
+                        RawData = evt.RawData,
+                        Details = new Dictionary<string, object>(evt.Fields)
                     };
                     
                     timeline.Add(timelineEvent);
@@ -124,10 +124,7 @@ namespace SecuNik.LogX.Api.Services.Analysis
                 LastEvent = timeline.Max(e => e.Timestamp)
             };
             
-            if (stats.FirstEvent.HasValue && stats.LastEvent.HasValue)
-            {
-                stats.TimeRange = stats.LastEvent.Value - stats.FirstEvent.Value;
-            }
+            stats.TimeRange = stats.LastEvent - stats.FirstEvent;
             
             // Events by type
             stats.EventsByType = timeline
@@ -153,12 +150,11 @@ namespace SecuNik.LogX.Api.Services.Analysis
                 
             // Events by hour
             stats.EventsByHour = timeline
-                .Where(e => e.Timestamp.HasValue)
                 .GroupBy(e => new DateTime(
-                    e.Timestamp.Value.Year,
-                    e.Timestamp.Value.Month,
-                    e.Timestamp.Value.Day,
-                    e.Timestamp.Value.Hour,
+                    e.Timestamp.Year,
+                    e.Timestamp.Month,
+                    e.Timestamp.Day,
+                    e.Timestamp.Hour,
                     0, 0))
                 .ToDictionary(g => g.Key, g => g.Count());
                 

@@ -2,7 +2,6 @@ using SecuNik.LogX.Core.Entities;
 
 namespace SecuNik.LogX.Core.Interfaces
 {
-    
     public interface IAnalysisService
     {
         Task<Analysis> StartAnalysisAsync(Guid uploadId, AnalysisOptions options, CancellationToken cancellationToken = default);
