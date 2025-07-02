@@ -224,7 +224,7 @@ IOCs detected: {analysisResult.IOCCount}
 - Medium confidence IOCs: {analysisResult.IOCs?.Count(i => i.Confidence >= 50 && i.Confidence < 80) ?? 0}
 - Low confidence IOCs: {analysisResult.IOCs?.Count(i => i.Confidence < 50) ?? 0}
 
-MITRE ATT&CK Techniques: {analysisResult.MITRETechniques}
+MITRE ATT&amp;CK Techniques: {analysisResult.MITRETechniques}
 Matched Rules: {analysisResult.RuleMatches}
 
 Current findings summary:
@@ -273,7 +273,7 @@ Keep it under 500 words, suitable for C-level executives.",
 
 Analysis ID: {result.AnalysisId}
 Threat Level: {result.ThreatLevel}
-IOCs: {string.Join(", ", result.IOCs?.Take(10).Select(i => $"{i.Type}:{i.Value}") ?? new List<string>())}
+IOCs: {string.Join(", ", result.IOCs?.Take(10).Select(i => i.Type + ":" + i.Value) ?? new List<string>())}
 MITRE Techniques: {string.Join(", ", result.MITREMappings?.Take(10).Select(m => m.TechniqueId) ?? new List<string>())}
 
 Findings:
@@ -325,7 +325,7 @@ MITRE Techniques: {result.MITRETechniques} techniques identified
 Duration: {result.Duration}
 
 Top IOCs:
-{string.Join("\n", result.IOCs?.Take(5).Select(i => $"- {i.Type}: {i.Value} (Confidence: {i.Confidence}%)") ?? new List<string>())}
+{string.Join("\n", result.IOCs?.Take(5).Select(i => "- " + i.Type + ": " + i.Value + " (Confidence: " + i.Confidence + "%)") ?? new List<string>())}
 
 Key Findings:
 {result.Findings ?? "No findings available"}
