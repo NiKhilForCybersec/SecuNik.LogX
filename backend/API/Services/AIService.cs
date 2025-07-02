@@ -149,7 +149,7 @@ Provide:
             var prompt = $@"Extract all Indicators of Compromise (IOCs) from the following content. Return a structured list with IOC type, value, and confidence level.
 
 Content:
-{content.Length > 10000 ? content.Substring(0, 10000) + "... [truncated]" : content}
+{(content.Length > 10000 ? content.Substring(0, 10000) + "... [truncated]" : content)}
 
 Extract and categorize:
 - IP addresses (IPv4 and IPv6)
@@ -174,7 +174,7 @@ Format each IOC as: Type|Value|Confidence(0-100)|Context";
 
 Log Type: {logType}
 Content Sample:
-{logContent.Length > 20000 ? logContent.Substring(0, 20000) + "... [truncated]" : logContent}
+{(logContent.Length > 20000 ? logContent.Substring(0, 20000) + "... [truncated]" : logContent)}
 
 Identify:
 1. Security events and incidents
@@ -195,7 +195,7 @@ Provide a forensics-focused analysis with specific evidence citations.";
         {
             var prompt = $@"Detect anomalies and suspicious patterns in the following {contentType} content:
 
-{content.Length > 15000 ? content.Substring(0, 15000) + "... [truncated]" : content}
+        {(content.Length > 15000 ? content.Substring(0, 15000) + "... [truncated]" : content)}
 
 Focus on:
 1. Statistical anomalies (unusual frequencies, outliers)
