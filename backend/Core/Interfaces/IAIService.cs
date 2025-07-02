@@ -1,468 +1,223 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-using SecuNikLogX.API.Data;
+using SecuNikLogX.API.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SecuNikLogX.API.Health
+namespace SecuNikLogX.Core.Interfaces
 {
-    public class DatabaseHealthCheck : IHealthCheck
+    public interface IAIService
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<DatabaseHealthCheck> _logger;
+        // Core analysis
+        Task<AIAnalysisResult> AnalyzeWithAIAsync(string content, AIAnalysisOptions options, CancellationToken cancellationToken = default);
+        Task<ThreatAssessment> GenerateThreatAssessmentAsync(Guid analysisId, CancellationToken cancellationToken = default);
+        
+        // IOC enrichment
+        Task<EnrichedIOC> EnrichIOCAsync(string iocValue, IOCType type, CancellationToken cancellationToken = default);
+        Task<List<EnrichedIOC>> EnrichIOCBatchAsync(List<IOC> iocs, CancellationToken cancellationToken = default);
+        
+        // Report generation
+        Task<string> GenerateExecutiveSummaryAsync(Guid analysisId, CancellationToken cancellationToken = default);
+        Task<ForensicsReport> GenerateDetailedReportAsync(Guid analysisId, ReportOptions options, CancellationToken cancellationToken = default);
+        Task<string> GenerateIncidentResponsePlanAsync(Guid analysisId, CancellationToken cancellationToken = default);
+        
+        // Cost management
+        Task<decimal> EstimateCostAsync(string content, AIModel model, CancellationToken cancellationToken = default);
+        Task<AIUsageStatistics> GetUsageStatisticsAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
+        
+        // Natural language queries
+        Task<string> QueryAnalysisAsync(Guid analysisId, string naturalLanguageQuery, CancellationToken cancellationToken = default);
+        Task<List<string>> SuggestNextStepsAsync(Guid analysisId, CancellationToken cancellationToken = default);
+        
+        // Pattern detection
+        Task<List<DetectedPattern>> DetectPatternsAsync(string content, PatternDetectionOptions options, CancellationToken cancellationToken = default);
+        Task<List<AnomalyResult>> DetectAnomaliesAsync(string content, AnomalyDetectionOptions options, CancellationToken cancellationToken = default);
+        
+        // Threat intelligence
+        Task<ThreatIntelligence> GetThreatIntelligenceAsync(string indicator, CancellationToken cancellationToken = default);
+        Task<List<ThreatActor>> IdentifyThreatActorsAsync(Guid analysisId, CancellationToken cancellationToken = default);
+        
+        // Model management
+        Task<List<AIModel>> GetAvailableModelsAsync(CancellationToken cancellationToken = default);
+        Task<ModelHealth> CheckModelHealthAsync(AIModel model, CancellationToken cancellationToken = default);
+        Task<bool> ValidateApiKeyAsync(string apiKey, CancellationToken cancellationToken = default);
+    }
 
-        public DatabaseHealthCheck(
-            ApplicationDbContext dbContext,
-            IConfiguration configuration,
-            ILogger<DatabaseHealthCheck> logger)
-        {
-            _dbContext = dbContext;
-            _configuration = configuration;
-            _logger = logger;
-        }
+    // Supporting types for the interface
+    public class AIAnalysisResult
+    {
+        public string Summary { get; set; }
+        public List<string> KeyFindings { get; set; }
+        public double ConfidenceScore { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
+        public int TokensUsed { get; set; }
+        public decimal EstimatedCost { get; set; }
+        public TimeSpan ProcessingTime { get; set; }
+    }
 
-        public async Task<HealthCheckResult> CheckHealthAsync(
-            HealthCheckContext context,
-            CancellationToken cancellationToken = default)
-        {
-            var data = new Dictionary<string, object>();
-            var healthCheckResults = new List<HealthCheckItem>();
+    public class AIAnalysisOptions
+    {
+        public AIAnalysisType AnalysisType { get; set; }
+        public AIModel Model { get; set; }
+        public int MaxTokens { get; set; }
+        public double Temperature { get; set; }
+        public bool IncludeIOCAnalysis { get; set; }
+        public bool IncludeMITREMapping { get; set; }
+        public string CustomPrompt { get; set; }
+    }
 
-            try
-            {
-                // 1. Check database connection
-                var connectionResult = await CheckDatabaseConnectionAsync(cancellationToken);
-                healthCheckResults.Add(connectionResult);
-                data["Connection"] = connectionResult.Status;
+    public enum AIAnalysisType
+    {
+        Quick,
+        Standard,
+        Comprehensive,
+        Custom
+    }
 
-                if (connectionResult.Status != "Healthy")
-                {
-                    return HealthCheckResult.Unhealthy(
-                        "Database connection failed",
-                        data: data);
-                }
+    public enum AIModel
+    {
+        GPT35Turbo,
+        GPT4,
+        GPT4Turbo,
+        Claude3Opus,
+        Claude3Sonnet,
+        Custom
+    }
 
-                // 2. Check migration status
-                var migrationResult = await CheckMigrationStatusAsync(cancellationToken);
-                healthCheckResults.Add(migrationResult);
-                data["Migrations"] = migrationResult.Status;
+    public class ThreatAssessment
+    {
+        public Guid AnalysisId { get; set; }
+        public double ThreatScore { get; set; }
+        public string ThreatLevel { get; set; }
+        public List<string> RiskFactors { get; set; }
+        public List<string> Recommendations { get; set; }
+        public Dictionary<string, double> CategoryScores { get; set; }
+        public DateTime AssessedAt { get; set; }
+    }
 
-                // 3. Check disk space for database file
-                var diskSpaceResult = await CheckDiskSpaceAsync();
-                healthCheckResults.Add(diskSpaceResult);
-                data["DiskSpace"] = diskSpaceResult.Status;
-                data["DiskSpaceDetails"] = diskSpaceResult.Details;
+    public class EnrichedIOC
+    {
+        public string Value { get; set; }
+        public IOCType Type { get; set; }
+        public string Description { get; set; }
+        public double RiskScore { get; set; }
+        public List<string> RelatedIndicators { get; set; }
+        public Dictionary<string, object> ThreatIntelligence { get; set; }
+        public DateTime EnrichedAt { get; set; }
+    }
 
-                // 4. Check table existence
-                var tableResult = await CheckTablesAsync(cancellationToken);
-                healthCheckResults.Add(tableResult);
-                data["Tables"] = tableResult.Status;
-                data["TableDetails"] = tableResult.Details;
+    public class ForensicsReport
+    {
+        public string Title { get; set; }
+        public string ExecutiveSummary { get; set; }
+        public List<ReportSection> Sections { get; set; }
+        public List<string> Recommendations { get; set; }
+        public Dictionary<string, object> Statistics { get; set; }
+        public DateTime GeneratedAt { get; set; }
+    }
 
-                // 5. Query performance test
-                var performanceResult = await CheckQueryPerformanceAsync(cancellationToken);
-                healthCheckResults.Add(performanceResult);
-                data["QueryPerformance"] = performanceResult.Status;
-                data["QueryPerformanceMs"] = performanceResult.Details["ElapsedMs"];
+    public class ReportSection
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public List<string> KeyPoints { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+    }
 
-                // 6. Database file size check
-                var fileSizeResult = await CheckDatabaseFileSizeAsync();
-                healthCheckResults.Add(fileSizeResult);
-                data["DatabaseSize"] = fileSizeResult.Status;
-                data["DatabaseSizeDetails"] = fileSizeResult.Details;
+    public class ReportOptions
+    {
+        public ReportFormat Format { get; set; }
+        public ReportDetailLevel DetailLevel { get; set; }
+        public bool IncludeRawData { get; set; }
+        public bool IncludeVisualizations { get; set; }
+        public List<string> CustomSections { get; set; }
+    }
 
-                // Determine overall health
-                var unhealthyCount = healthCheckResults.Count(r => r.Status == "Unhealthy");
-                var degradedCount = healthCheckResults.Count(r => r.Status == "Degraded");
+    public enum ReportFormat
+    {
+        Markdown,
+        HTML,
+        PDF,
+        JSON
+    }
 
-                if (unhealthyCount > 0)
-                {
-                    return HealthCheckResult.Unhealthy(
-                        $"Database health check failed: {unhealthyCount} unhealthy checks",
-                        data: data);
-                }
+    public enum ReportDetailLevel
+    {
+        Executive,
+        Standard,
+        Technical,
+        Comprehensive
+    }
 
-                if (degradedCount > 0)
-                {
-                    return HealthCheckResult.Degraded(
-                        $"Database performance degraded: {degradedCount} degraded checks",
-                        data: data);
-                }
+    public class AIUsageStatistics
+    {
+        public int TotalRequests { get; set; }
+        public int TotalTokensUsed { get; set; }
+        public decimal TotalCost { get; set; }
+        public Dictionary<AIModel, int> RequestsByModel { get; set; }
+        public Dictionary<DateTime, int> RequestsByDay { get; set; }
+        public double AverageResponseTime { get; set; }
+    }
 
-                return HealthCheckResult.Healthy(
-                    "Database is healthy",
-                    data: data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Database health check failed with exception");
-                
-                return HealthCheckResult.Unhealthy(
-                    $"Database health check failed: {ex.Message}",
-                    exception: ex,
-                    data: data);
-            }
-        }
+    public class DetectedPattern
+    {
+        public string PatternType { get; set; }
+        public string Description { get; set; }
+        public double Confidence { get; set; }
+        public List<string> Instances { get; set; }
+        public Dictionary<string, object> Attributes { get; set; }
+    }
 
-        private async Task<HealthCheckItem> CheckDatabaseConnectionAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var stopwatch = Stopwatch.StartNew();
-                var canConnect = await _dbContext.Database.CanConnectAsync(cancellationToken);
-                stopwatch.Stop();
+    public class PatternDetectionOptions
+    {
+        public List<string> PatternTypes { get; set; }
+        public double MinConfidence { get; set; }
+        public int MaxResults { get; set; }
+    }
 
-                if (canConnect)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DatabaseConnection",
-                        Status = "Healthy",
-                        Message = $"Connected successfully in {stopwatch.ElapsedMilliseconds}ms"
-                    };
-                }
+    public class AnomalyResult
+    {
+        public string AnomalyType { get; set; }
+        public string Description { get; set; }
+        public double AnomalyScore { get; set; }
+        public string Context { get; set; }
+        public Dictionary<string, object> Details { get; set; }
+    }
 
-                return new HealthCheckItem
-                {
-                    Name = "DatabaseConnection",
-                    Status = "Unhealthy",
-                    Message = "Cannot connect to database"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckItem
-                {
-                    Name = "DatabaseConnection",
-                    Status = "Unhealthy",
-                    Message = $"Connection failed: {ex.Message}"
-                };
-            }
-        }
+    public class AnomalyDetectionOptions
+    {
+        public double SensitivityThreshold { get; set; }
+        public List<string> FocusAreas { get; set; }
+        public bool IncludeStatisticalAnalysis { get; set; }
+    }
 
-        private async Task<HealthCheckItem> CheckMigrationStatusAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var pendingMigrations = await _dbContext.Database
-                    .GetPendingMigrationsAsync(cancellationToken);
+    public class ThreatIntelligence
+    {
+        public string Indicator { get; set; }
+        public string ThreatType { get; set; }
+        public double RiskScore { get; set; }
+        public List<string> AssociatedCampaigns { get; set; }
+        public List<string> RelatedActors { get; set; }
+        public Dictionary<string, object> AdditionalContext { get; set; }
+        public DateTime LastUpdated { get; set; }
+    }
 
-                var pendingCount = pendingMigrations.Count();
+    public class ThreatActor
+    {
+        public string Name { get; set; }
+        public string Alias { get; set; }
+        public double ConfidenceScore { get; set; }
+        public List<string> KnownTechniques { get; set; }
+        public List<string> TargetSectors { get; set; }
+        public string MotivationType { get; set; }
+    }
 
-                if (pendingCount == 0)
-                {
-                    var appliedMigrations = await _dbContext.Database
-                        .GetAppliedMigrationsAsync(cancellationToken);
-
-                    return new HealthCheckItem
-                    {
-                        Name = "MigrationStatus",
-                        Status = "Healthy",
-                        Message = $"All migrations applied. Total: {appliedMigrations.Count()}"
-                    };
-                }
-
-                return new HealthCheckItem
-                {
-                    Name = "MigrationStatus",
-                    Status = "Degraded",
-                    Message = $"{pendingCount} pending migrations found"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckItem
-                {
-                    Name = "MigrationStatus",
-                    Status = "Unhealthy",
-                    Message = $"Migration check failed: {ex.Message}"
-                };
-            }
-        }
-
-        private async Task<HealthCheckItem> CheckDiskSpaceAsync()
-        {
-            try
-            {
-                var connectionString = _configuration.GetConnectionString("DefaultConnection");
-                var dataSource = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(connectionString).DataSource;
-                
-                if (string.IsNullOrEmpty(dataSource))
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DiskSpace",
-                        Status = "Unhealthy",
-                        Message = "Cannot determine database file location"
-                    };
-                }
-
-                var fileInfo = new FileInfo(dataSource);
-                var driveInfo = new DriveInfo(fileInfo.Directory.Root.FullName);
-                
-                var freeSpaceGB = driveInfo.AvailableFreeSpace / (1024.0 * 1024.0 * 1024.0);
-                var totalSpaceGB = driveInfo.TotalSize / (1024.0 * 1024.0 * 1024.0);
-                var usedPercentage = ((totalSpaceGB - freeSpaceGB) / totalSpaceGB) * 100;
-
-                var warningThresholdGB = _configuration.GetValue<double>("HealthChecks:DiskSpaceWarningGB", 10.0);
-                var criticalThresholdGB = _configuration.GetValue<double>("HealthChecks:DiskSpaceCriticalGB", 5.0);
-
-                var details = new Dictionary<string, object>
-                {
-                    { "FreeSpaceGB", Math.Round(freeSpaceGB, 2) },
-                    { "TotalSpaceGB", Math.Round(totalSpaceGB, 2) },
-                    { "UsedPercentage", Math.Round(usedPercentage, 2) }
-                };
-
-                if (freeSpaceGB < criticalThresholdGB)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DiskSpace",
-                        Status = "Unhealthy",
-                        Message = $"Critical: Only {freeSpaceGB:F2}GB free space remaining",
-                        Details = details
-                    };
-                }
-
-                if (freeSpaceGB < warningThresholdGB)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DiskSpace",
-                        Status = "Degraded",
-                        Message = $"Warning: Only {freeSpaceGB:F2}GB free space remaining",
-                        Details = details
-                    };
-                }
-
-                return new HealthCheckItem
-                {
-                    Name = "DiskSpace",
-                    Status = "Healthy",
-                    Message = $"Sufficient disk space: {freeSpaceGB:F2}GB free",
-                    Details = details
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckItem
-                {
-                    Name = "DiskSpace",
-                    Status = "Unhealthy",
-                    Message = $"Disk space check failed: {ex.Message}"
-                };
-            }
-        }
-
-        private async Task<HealthCheckItem> CheckTablesAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var requiredTables = new[] { "Analyses", "Rules", "Parsers", "IOCs", "MITREs" };
-                var existingTables = new List<string>();
-                var missingTables = new List<string>();
-
-                foreach (var table in requiredTables)
-                {
-                    var sql = $"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{table}'";
-                    var exists = await _dbContext.Database
-                        .ExecuteSqlRawAsync(sql, cancellationToken) > 0;
-
-                    if (exists)
-                    {
-                        existingTables.Add(table);
-                    }
-                    else
-                    {
-                        missingTables.Add(table);
-                    }
-                }
-
-                var details = new Dictionary<string, object>
-                {
-                    { "ExistingTables", existingTables },
-                    { "MissingTables", missingTables }
-                };
-
-                if (missingTables.Count == 0)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "TableExistence",
-                        Status = "Healthy",
-                        Message = "All required tables exist",
-                        Details = details
-                    };
-                }
-
-                return new HealthCheckItem
-                {
-                    Name = "TableExistence",
-                    Status = "Unhealthy",
-                    Message = $"Missing {missingTables.Count} required tables",
-                    Details = details
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckItem
-                {
-                    Name = "TableExistence",
-                    Status = "Unhealthy",
-                    Message = $"Table check failed: {ex.Message}"
-                };
-            }
-        }
-
-        private async Task<HealthCheckItem> CheckQueryPerformanceAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var stopwatch = Stopwatch.StartNew();
-                
-                // Simple query to test performance
-                var count = await _dbContext.Analyses
-                    .Where(a => a.CreatedAt > DateTime.UtcNow.AddDays(-30))
-                    .CountAsync(cancellationToken);
-
-                stopwatch.Stop();
-
-                var performanceThresholdMs = _configuration.GetValue<int>("HealthChecks:QueryPerformanceThresholdMs", 100);
-                var criticalThresholdMs = _configuration.GetValue<int>("HealthChecks:QueryPerformanceCriticalMs", 500);
-
-                var details = new Dictionary<string, object>
-                {
-                    { "ElapsedMs", stopwatch.ElapsedMilliseconds },
-                    { "RecordCount", count }
-                };
-
-                if (stopwatch.ElapsedMilliseconds > criticalThresholdMs)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "QueryPerformance",
-                        Status = "Unhealthy",
-                        Message = $"Query performance critical: {stopwatch.ElapsedMilliseconds}ms",
-                        Details = details
-                    };
-                }
-
-                if (stopwatch.ElapsedMilliseconds > performanceThresholdMs)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "QueryPerformance",
-                        Status = "Degraded",
-                        Message = $"Query performance degraded: {stopwatch.ElapsedMilliseconds}ms",
-                        Details = details
-                    };
-                }
-
-                return new HealthCheckItem
-                {
-                    Name = "QueryPerformance",
-                    Status = "Healthy",
-                    Message = $"Query performance good: {stopwatch.ElapsedMilliseconds}ms",
-                    Details = details
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckItem
-                {
-                    Name = "QueryPerformance",
-                    Status = "Unhealthy",
-                    Message = $"Performance test failed: {ex.Message}"
-                };
-            }
-        }
-
-        private async Task<HealthCheckItem> CheckDatabaseFileSizeAsync()
-        {
-            try
-            {
-                var connectionString = _configuration.GetConnectionString("DefaultConnection");
-                var dataSource = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(connectionString).DataSource;
-                
-                if (!File.Exists(dataSource))
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DatabaseFileSize",
-                        Status = "Unhealthy",
-                        Message = "Database file not found"
-                    };
-                }
-
-                var fileInfo = new FileInfo(dataSource);
-                var fileSizeMB = fileInfo.Length / (1024.0 * 1024.0);
-                
-                var warningSizeMB = _configuration.GetValue<double>("HealthChecks:DatabaseSizeWarningMB", 1024.0); // 1GB
-                var criticalSizeMB = _configuration.GetValue<double>("HealthChecks:DatabaseSizeCriticalMB", 5120.0); // 5GB
-
-                var details = new Dictionary<string, object>
-                {
-                    { "FileSizeMB", Math.Round(fileSizeMB, 2) },
-                    { "FilePath", dataSource },
-                    { "LastModified", fileInfo.LastWriteTimeUtc }
-                };
-
-                if (fileSizeMB > criticalSizeMB)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DatabaseFileSize",
-                        Status = "Unhealthy",
-                        Message = $"Database file critically large: {fileSizeMB:F2}MB",
-                        Details = details
-                    };
-                }
-
-                if (fileSizeMB > warningSizeMB)
-                {
-                    return new HealthCheckItem
-                    {
-                        Name = "DatabaseFileSize",
-                        Status = "Degraded",
-                        Message = $"Database file size warning: {fileSizeMB:F2}MB",
-                        Details = details
-                    };
-                }
-
-                return new HealthCheckItem
-                {
-                    Name = "DatabaseFileSize",
-                    Status = "Healthy",
-                    Message = $"Database file size normal: {fileSizeMB:F2}MB",
-                    Details = details
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthCheckItem
-                {
-                    Name = "DatabaseFileSize",
-                    Status = "Unhealthy",
-                    Message = $"File size check failed: {ex.Message}"
-                };
-            }
-        }
-
-        private class HealthCheckItem
-        {
-            public string Name { get; set; }
-            public string Status { get; set; }
-            public string Message { get; set; }
-            public Dictionary<string, object> Details { get; set; } = new();
-        }
+    public class ModelHealth
+    {
+        public AIModel Model { get; set; }
+        public bool IsAvailable { get; set; }
+        public double ResponseTime { get; set; }
+        public int RateLimitRemaining { get; set; }
+        public DateTime LastChecked { get; set; }
     }
 }
