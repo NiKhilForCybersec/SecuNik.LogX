@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SecuNik.LogX.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8da3d91886aef546ee1436399400293ce156a71")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c1afa33855d2b4045a25c9cc0bcd0eaeac9b82fd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SecuNik.LogX.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SecuNik.LogX.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

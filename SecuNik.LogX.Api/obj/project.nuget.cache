@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ot/9kDxoiGA=",
+  "dgSpecHash": "CWgykLE8ih8=",
   "success": true,
-  "projectFilePath": "N:\\MainProject\\SecuNik.LogX\\SecuNik.LogX.Api\\SecuNik.LogX.Api.csproj",
+  "projectFilePath": "N:\\Secunik\\project\\LogX\\SecuNik.LogX.Api\\SecuNik.LogX.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nikhi\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
     "C:\\Users\\nikhi\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecuNik.LogX.Api", "SecuNik.LogX.Api\SecuNik.LogX.Api.csproj", "{E6EBCBCA-4C56-4447-8851-7E30A3A26C7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecuNik.LogX.Core", "SecuNik.LogX.Core\SecuNik.LogX.Core.csproj", "{620D6C56-1DDF-6F2A-B1F9-2711516FBB64}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6EBCBCA-4C56-4447-8851-7E30A3A26C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6EBCBCA-4C56-4447-8851-7E30A3A26C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6EBCBCA-4C56-4447-8851-7E30A3A26C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6EBCBCA-4C56-4447-8851-7E30A3A26C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{620D6C56-1DDF-6F2A-B1F9-2711516FBB64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{620D6C56-1DDF-6F2A-B1F9-2711516FBB64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{620D6C56-1DDF-6F2A-B1F9-2711516FBB64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{620D6C56-1DDF-6F2A-B1F9-2711516FBB64}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {722D9E87-D096-415D-A605-491BDB21C3C9}
+	EndGlobalSection
+EndGlobal

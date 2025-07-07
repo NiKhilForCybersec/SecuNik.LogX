@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0gevFInYjhI=",
+  "dgSpecHash": "2aFKnXbiDtw=",
   "success": true,
-  "projectFilePath": "N:\\MainProject\\SecuNik.LogX\\SecuNik.LogX.Core\\SecuNik.LogX.Core.csproj",
+  "projectFilePath": "N:\\Secunik\\project\\LogX\\SecuNik.LogX.Core\\SecuNik.LogX.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nikhi\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\nikhi\\.nuget\\packages\\microsoft.extensions.configuration.binder\\8.0.0\\microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512",
